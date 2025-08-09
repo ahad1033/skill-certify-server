@@ -1,31 +1,33 @@
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt'
 
-import config from "../../config";
-import { User } from "./user.model";
+import config from '../../config'
+import { User } from './user.model'
 
 const superUser = {
-  firstName: "SkillCertify",
-  lastName: "Admin",
+  firstName: 'SkillCertify',
+  lastName: 'Admin',
   email: config.admin_email,
   password: config.admin_password,
-  role: "admin",
-};
+  role: 'admin',
+  canTakeStepOne: false,
+  isVerified: true,
+}
 
-export const seedSuperAdmin = async () => {
-  const isSuperAdminExits = await User.findOne({ role: "admin" });
+export const seedAdmin = async () => {
+  const isAdminExits = await User.findOne({ role: 'admin' })
 
   const hashedPassword = await bcrypt.hash(
     superUser.password,
-    Number(config.bcrypt_salt_rounds)
-  );
+    Number(config.bcrypt_salt_rounds),
+  )
 
-  const superAdminDataWithHashedPass = {
+  const adminDataWithHashedPass = {
     ...superUser,
     password: hashedPassword,
-  };
-
-  if (!isSuperAdminExits) {
-    await User.create(superAdminDataWithHashedPass);
-    // console.log("Super admin created successfully!");
   }
-};
+
+  if (!isAdminExits) {
+    await User.create(adminDataWithHashedPass)
+    // console.log('Admin created successfully!')
+  }
+}
